@@ -8,7 +8,7 @@
         <el-col :span="2"><el-button type="primary" plain>删除</el-button></el-col>
       </el-row>
       <el-table
-        :data="tableData"
+        :data="prizes"
         border
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -48,11 +48,14 @@
 </template>
 
 <script>
+import * as API from "@/api";
+import { checkError } from "@/utils";
+
 export default {
     name: "Prizes",
     data() {
       return {
-        tableData: [{
+        prizes: [{
           id: 1,
           name: '幻13',
           url: 'http://img.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0414%252F0d36acebj00qril02000vc000hs00bvg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634113242&t=9ed22efdbca9799927a44316ed1604f8'
@@ -65,13 +68,24 @@ export default {
       }
     },
     multipleSelection: [],
+    mounted() {
+      this.loadData()
+    },
     methods: {
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
+
       goInfo(row, column) {
         if (column.property == "name"){
           this.$router.push({path: '/prize', query: {id: row.id}})
+        }
+      },
+
+      async loadData() {
+        var re = await API.prize_list()
+        if (checkError(re)) {
+          this.prizes = re["result"]
         }
       }
     }
