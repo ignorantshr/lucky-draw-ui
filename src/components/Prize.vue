@@ -1,14 +1,22 @@
 <template>
   <div>
-      <span>id</span><span>{{ prize.id }}</span><br/>
-      <span>名称</span><span>{{ prize.name }}</span><br/>
-      <span>图片</span><span>{{ prize.image }}</span><br/>
-      <span>预览</span><span><el-image
+    <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="名称">
+            <el-input v-model="name"></el-input>
+        </el-form-item>
+        <el-form-item label="图片">
+            <el-input v-model="url"></el-input>
+        </el-form-item>
+        <el-form-item label="预览" style='text-align:left'>
+            <el-image
               style="width: 100px; height: 100px"
-              :src="prize.image"
+              :src="url"
               fit="contain"
-              :preview-src-list="[prize.image]">
-            </el-image></span><br/>
+              aria-flowto="left"
+              :preview-src-list="[url]">
+            </el-image>
+        </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -20,17 +28,13 @@ export default {
     },
     data() {
         return {
-            prize: {
-                id: 1,
-                name: "幻13",
-                url: "https://tse3-mm.cn.bing.net/th/id/OIP-C._awktov9YyjaKHqgJtpniQHaE8?w=274&h=183&c=7&r=0&o=5&pid=1.7"
-            }
+            name: "幻13",
+            url: "https://tse3-mm.cn.bing.net/th/id/OIP-C._awktov9YyjaKHqgJtpniQHaE8?w=274&h=183&c=7&r=0&o=5&pid=1.7"
         }
     },
-    watch: {
-        id(value) {
-            console.log("prizeId: ", value)
-            this.prize = this.prize
+    methods: {
+        onSubmit() {
+            console.log('submit!');
         }
     }
 }

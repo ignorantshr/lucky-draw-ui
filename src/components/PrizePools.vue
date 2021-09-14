@@ -1,19 +1,18 @@
 <template>
-  <div class="table">
-      <div class="sub-title">
-        <el-input v-model="input" placeholder="名称" size="small" clearable></el-input>
-        <el-button icon="el-icon-search" circle></el-button>
-      </div>
-      <el-row>
-        <el-button type="primary" plain>添加</el-button>
-        <el-button type="primary" plain>编辑</el-button>
-        <el-button type="primary" plain>删除</el-button>
+  <div>
+       <el-row gutter=20>
+        <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" clearable></el-input></el-col>
+        <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
+        <el-col :span="2" :offset="9"><el-button type="primary" plain>添加</el-button></el-col>
+        <el-col :span="2"><el-button type="primary" plain>编辑</el-button></el-col>
+        <el-col :span="2"><el-button type="primary" plain>删除</el-button></el-col>
       </el-row>
       <el-table
         :data="tableData"
         border
         style="width: 100%"
-        @selection-change="handleSelectionChange">
+        @selection-change="handleSelectionChange"
+        @row-click="goInfo">
         <el-table-column
           type="selection"
           width="55">
@@ -69,6 +68,11 @@ export default {
     methods: {
       handleSelectionChange(val) {
         this.multipleSelection = val;
+      },
+      goInfo(row, column) {
+        if (column.property == "name"){
+          this.$router.push({path: '/pool', query: {id: row.id}})
+        }
       }
     }
 }
