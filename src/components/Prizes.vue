@@ -1,12 +1,14 @@
 <template>
   <div>
-      <el-row gutter=20>
+      <div class="actionHeader">
         <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" clearable></el-input></el-col>
         <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
-        <el-col :span="2" :offset="9"><el-button type="primary" plain>添加</el-button></el-col>
-        <el-col :span="2"><el-button type="primary" plain>编辑</el-button></el-col>
-        <el-col :span="2"><el-button type="primary" plain>删除</el-button></el-col>
-      </el-row>
+        <div style="text-align: right" >
+          <el-button @click="add" type="primary" plain>添加</el-button>
+          <el-button @click="update" type="primary" plain>编辑</el-button>
+          <el-button @click="del" type="primary" plain>删除</el-button>
+        </div>
+      </div>
       <el-table
         :data="prizes"
         border
@@ -48,22 +50,20 @@
 </template>
 
 <script>
-import * as API from "@/api";
+import * as API from "@/api/prize";
 import { checkError } from "@/utils";
 
 export default {
     name: "Prizes",
     data() {
       return {
-        prizes: [{
-          id: 1,
-          name: '幻13',
-          url: 'http://img.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0414%252F0d36acebj00qril02000vc000hs00bvg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634113242&t=9ed22efdbca9799927a44316ed1604f8'
-        }, {
-          id: 2,
-          name: 'G502',
-          url: 'http://img.b0.upaiyun.com%2F3039a235122576bb2a0781442c5623664e05624bb63a-iXeTzs_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634113275&t=2b9dcf5a2edbec795e8d052cd9e4811f'
-        }],
+        prizes: [
+          // {
+          //   id: 1,
+          //   name: '幻13',
+          //   url: 'http://img.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0414%252F0d36acebj00qril02000vc000hs00bvg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634113242&t=9ed22efdbca9799927a44316ed1604f8'
+          // }
+        ],
         input: "",
       }
     },
@@ -87,11 +87,42 @@ export default {
         if (checkError(re)) {
           this.prizes = re["result"]
         }
-      }
+      },
+
+      add() {
+        this.$router.push({path: '/prize', query: {addButtons: true}})
+      },
+
+      update() {
+        this.$router.push({path: '/prize', query: {id: this.multipleSelection[0].id, updateButtons: true}})
+      },
+
+      async del() {
+        let fail = []
+        let allSuccess = true
+        for (let i in this.multipleSelection) {
+          var re = await API.prize_delete(this.multipleSelection[i].id)
+          let isSuccess = checkError(re)
+          if (!isSuccess) {
+            fail.push(this.multipleSelection[i].name)
+          }
+          allSuccess = allSuccess | isSuccess
+        }
+        if (allSuccess) {
+          window.alert("success")
+        }else{
+          window.alert("faild: ", fail)
+        }
+        this.loadData()
+      },
+
     }
 }
 </script>
 
 <style>
-
+.actionHeader {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
 </style>

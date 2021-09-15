@@ -1,6 +1,6 @@
 export function checkError(data) {
     if (data["code"] != 200){
-        console.error(data)
+        window.alert(data["msg"])
         return false
     }
     return true

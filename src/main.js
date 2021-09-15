@@ -31,12 +31,20 @@ const router = new VueRouter({
         {
           path: '/prize',
           component: Prize,
-          props: {id: 1}
+          props: route => ({
+            id: route.query.id,
+            addButtons: route.query.addButtons,
+            updateButtons: route.query.updateButtons
+          })
         },
         {
           path: '/pool',
           component: PrizePool,
-          props: {id: 1}
+          props: route => ({
+            id: route.query.id,
+            addButtons: route.query.addButtons,
+            updateButtons: route.query.updateButtons
+          })
         },
       ]
     },

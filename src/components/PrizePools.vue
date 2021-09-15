@@ -1,14 +1,16 @@
 <template>
   <div>
-       <el-row gutter=20>
+       <div class="actionHeader">
         <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" clearable></el-input></el-col>
         <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
-        <el-col :span="2" :offset="9"><el-button type="primary" plain>添加</el-button></el-col>
-        <el-col :span="2"><el-button type="primary" plain>编辑</el-button></el-col>
-        <el-col :span="2"><el-button type="primary" plain>删除</el-button></el-col>
-      </el-row>
+        <div style="text-align: right" >
+          <el-button @click="add" type="primary" plain>添加</el-button>
+          <el-button @click="update" type="primary" plain>编辑</el-button>
+          <el-button @click="del" type="primary" plain>删除</el-button>
+        </div>
+      </div>
       <el-table
-        :data="tableData"
+        :data="pools"
         border
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -48,32 +50,75 @@
 </template>
 
 <script>
+import * as API from "@/api/pool";
+import { checkError } from "@/utils";
+
 export default {
     name: "PrizePools",
     data() {
       return {
-        tableData: [{
-          id: 1,
-          name: '奖池1',
-          type: 1
-        }, {
-          id: 2,
-          name: '奖池2',
-          type: 2
-        }],
+        pools: [
+          // {
+          //   id: 1,
+          //   name: '奖池1',
+          //   type: 1
+          // }, {
+          //   id: 2,
+          //   name: '奖池2',
+          //   type: 2
+          // }
+        ],
         input: "",
       }
     },
     multipleSelection: [],
+    mounted() {
+      this.loadData()
+    },
     methods: {
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
+      
+      async loadData() {
+        var re = await API.pool_list()
+        if (checkError(re)) {
+          this.pools = re["result"]
+        }
+      },
+
       goInfo(row, column) {
         if (column.property == "name"){
-          this.$router.push({path: '/pool', query: {id: row.id}})
+          this.$router.push({path: '/pool', query: {id: parseInt(row.id) }})
         }
-      }
+      },
+
+      add() {
+        this.$router.push({path: '/pool', query: {addButtons: true}})
+      },
+
+      update() {
+        this.$router.push({path: '/pool', query: {id: this.multipleSelection[0].id, updateButtons: true}})
+      },
+
+      async del() {
+        let fail = []
+        let allSuccess = true
+        for (let i in this.multipleSelection) {
+          var re = await API.pool_delete(this.multipleSelection[i].id)
+          let isSuccess = checkError(re)
+          if (!isSuccess) {
+            fail.push(this.multipleSelection[i].name)
+          }
+          allSuccess = allSuccess | isSuccess
+        }
+        if (allSuccess) {
+          window.alert("success")
+        }else{
+          window.alert("faild: ", fail)
+        }
+        this.loadData()
+      },
     }
 }
 </script>
