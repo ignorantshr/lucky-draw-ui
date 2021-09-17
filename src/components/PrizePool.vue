@@ -23,10 +23,10 @@
         <div class="actionHeader">
           <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" clearable></el-input></el-col>
           <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
-          <div style="text-align: right" >
-            <el-button type="primary" plain>添加</el-button>
-            <el-button type="primary" plain>编辑</el-button>
-            <el-button type="primary" plain>删除</el-button>
+          <div style="text-align: right" v-if="!addButtons && !updateButtons">
+            <el-button  @click="addPrize" type="primary" plain>添加</el-button>
+            <el-button @click="updatePrize" type="primary" plain>编辑</el-button>
+            <el-button @click="delPrize" type="primary" plain>删除</el-button>
           </div>
         </div>
         <el-table
@@ -75,14 +75,24 @@
         </el-table>
       </el-form-item>
     </el-form>
+    <prize-dialog v-if="prizeDialog" :prize="prize" :action="prizeAct" @add="realAddPrize" @update="realUpdatePrize" @cancel="cancelPrize"></prize-dialog>
   </div>
 </template>
 
 <script>
 import * as API from "@/api/pool";
 import { checkError } from "@/utils";
+import PrizeDialog from './PrizeDialog.vue';
+var prize = {
+            id: -1,
+            name: "",
+            url: "",
+            probability: 10,
+            number: 50
+          }
 
 export default {
+  components: { PrizeDialog },
     name: "PrizePool",
     props: ['id', 'addButtons', 'updateButtons'],
     data() {
@@ -115,6 +125,9 @@ export default {
           // }]
         },
         input: "",
+        prizeDialog: false,
+        prizeAct: "add",
+        prize: prize
       }
     },
     multipleSelection: [],
@@ -159,7 +172,57 @@ export default {
           if (this.updateButtons){
               this.loadData()
           }
+      },
+
+      addPrize() {
+        this.prizeAct = "add"
+        this.prizeDialog = true
+      },
+
+      updatePrize() {
+        this.prizeAct = "update"
+        this.prize = this.multipleSelection[0]
+        this.prizeDialog = true
+      },
+
+      async delPrize() {
+        let ids = []
+        for (let i in this.multipleSelection){
+          ids.push(new API.pool(this.multipleSelection[i].id))
+        }
+        var re = await API.pool_delPrize(API.newPoolPrize(this.id, ids))
+        if (checkError(re)){
+          window.alert("success");
+        }
+      },
+
+      async realAddPrize(prize){
+        this.closeDialog()
+        console.log("get prize: ", prize)
+        var re = await API.pool_addPrize(API.newPoolPrize(this.id, [prize]))
+        if (checkError(re)){
+          window.alert("success");
+        }
+      },
+
+      async realUpdatePrize(prize){
+        this.closeDialog()
+        console.log("get prize: ", prize)
+        var re = await API.pool_updatePrize(API.newPoolPrize(this.id, [prize]))
+        if (checkError(re)){
+          window.alert("success");
+        }
+      },
+
+      cancelPrize(){
+        this.closeDialog()
+      },
+
+      closeDialog() {
+        this.prizeDialog = false
+        this.prize = prize
       }
+
     }
 }
 </script>

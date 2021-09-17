@@ -3,6 +3,7 @@ import { prepath } from "./index";
 
 const poolUrl = prepath + '/prizePool/'
 
+export default pool
 export class pool {
     constructor(id, name, type){
         this.id = parseInt(id)
@@ -13,6 +14,11 @@ export class pool {
 }
 export function newPoolById(id) {
     return new pool(id, null, null)
+}
+export function newPoolPrize(id, prizes) {
+    var re = new pool(id, null, null)
+    re.prizes = prizes
+    return re
 }
 
 export function pool_list() {
@@ -86,4 +92,35 @@ export function pool_delete(id) {
     })
 }
 
-export default pool
+export function pool_addPrize(pool){
+    let url = poolUrl + "addPrize"
+    return service({
+        url: url,
+        method: 'post',
+        data: pool
+    }).then(res => {
+        return res.data
+    })
+}
+
+export function pool_updatePrize(pool){
+    let url = poolUrl + "updatePrize"
+    return service({
+        url: url,
+        method: 'post',
+        data: pool
+    }).then(res => {
+        return res.data
+    })
+}
+
+export function pool_delPrize(pool){
+    let url = poolUrl + "delPrize"
+    return service({
+        url: url,
+        method: 'post',
+        data: pool
+    }).then(res => {
+        return res.data
+    })
+}
