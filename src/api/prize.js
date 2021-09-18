@@ -8,6 +8,8 @@ export class prize {
         this.id = parseInt(id)
         this.name = name
         this.url = url
+        this.probability = 0
+        this.number = 0
     }
 }
 export function newPrizeById(id) {

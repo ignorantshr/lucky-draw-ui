@@ -5,8 +5,8 @@
         <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
         <div style="text-align: right" >
           <el-button @click="add" type="primary" plain>添加</el-button>
-          <el-button @click="update" type="primary" plain>编辑</el-button>
-          <el-button @click="del" type="primary" plain>删除</el-button>
+          <el-button @click="update" :disabled="updateAccess" type="primary" plain>编辑</el-button>
+          <el-button @click="del" :disabled="delAccess" type="primary" plain>删除</el-button>
         </div>
       </div>
       <el-table
@@ -65,9 +65,17 @@ export default {
           // }
         ],
         input: "",
+        multipleSelection: [],
       }
     },
-    multipleSelection: [],
+    computed: {
+      updateAccess() {
+        return this.multipleSelection.length != 1
+      },
+      delAccess() {
+        return this.multipleSelection.length == 0
+      },
+    },
     mounted() {
       this.loadData()
     },

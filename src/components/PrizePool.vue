@@ -24,9 +24,10 @@
           <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" clearable></el-input></el-col>
           <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
           <div style="text-align: right" v-if="!addButtons && !updateButtons">
-            <el-button  @click="addPrize" type="primary" plain>添加</el-button>
-            <el-button @click="updatePrize" type="primary" plain>编辑</el-button>
-            <el-button @click="delPrize" type="primary" plain>删除</el-button>
+            <el-button  @click="addPrize" :disabled="true" type="primary" plain>添加</el-button>
+            <el-button  @click="attachPrize" type="primary" plain>从库中添加</el-button>
+            <el-button @click="updatePrize" :disabled="updateAccess" type="primary" plain>编辑</el-button>
+            <el-button @click="delPrize" :disabled="delAccess" type="primary" plain>删除</el-button>
           </div>
         </div>
         <el-table
@@ -57,6 +58,7 @@
                 label="数量">
             </el-table-column>
             <el-table-column
+                :show-overflow-tooltip="true"
                 prop="url"
                 label="图片">
             </el-table-column>
@@ -75,7 +77,7 @@
         </el-table>
       </el-form-item>
     </el-form>
-    <prize-dialog v-if="prizeDialog" :prize="prize" :action="prizeAct" @add="realAddPrize" @update="realUpdatePrize" @cancel="cancelPrize"></prize-dialog>
+    <prize-dialog v-if="prizeDialog" :id="parseInt(id)" :prize="prize" :action="prizeAct" @add="realAddPrize" @attach="realAttachPrize" @update="realUpdatePrize" @cancel="cancelPrize"></prize-dialog>
   </div>
 </template>
 
@@ -127,10 +129,18 @@ export default {
         input: "",
         prizeDialog: false,
         prizeAct: "add",
-        prize: prize
+        prize: prize,
+        multipleSelection: [],
       }
     },
-    multipleSelection: [],
+    computed: {
+      updateAccess() {
+        return this.multipleSelection.length != 1
+      },
+      delAccess() {
+        return this.multipleSelection.length == 0
+      },
+    },
     mounted() {
       this.loadData()
     },
@@ -161,7 +171,7 @@ export default {
       async update() {
           var re = await API.pool_update(this.pool)
           if (checkError(re)) {
-              window.alert("success")
+              this.afterSuccess()
           }
       },
 
@@ -179,6 +189,12 @@ export default {
         this.prizeDialog = true
       },
 
+      attachPrize() {
+        this.prizeAct = "attach"
+        this.prize = this.id
+        this.prizeDialog = true
+      },
+
       updatePrize() {
         this.prizeAct = "update"
         this.prize = this.multipleSelection[0]
@@ -192,7 +208,7 @@ export default {
         }
         var re = await API.pool_delPrize(API.newPoolPrize(this.id, ids))
         if (checkError(re)){
-          window.alert("success");
+          this.afterSuccess()
         }
       },
 
@@ -201,7 +217,16 @@ export default {
         console.log("get prize: ", prize)
         var re = await API.pool_addPrize(API.newPoolPrize(this.id, [prize]))
         if (checkError(re)){
-          window.alert("success");
+          this.afterSuccess()
+        }
+      },
+
+      async realAttachPrize(prizes){
+        this.closeDialog()
+        console.log("get prize: ", prizes)
+        var re = await API.pool_addPrize(API.newPoolPrize(this.id, prizes))
+        if (checkError(re)){
+          this.afterSuccess()
         }
       },
 
@@ -210,7 +235,7 @@ export default {
         console.log("get prize: ", prize)
         var re = await API.pool_updatePrize(API.newPoolPrize(this.id, [prize]))
         if (checkError(re)){
-          window.alert("success");
+          this.afterSuccess()
         }
       },
 
@@ -221,6 +246,11 @@ export default {
       closeDialog() {
         this.prizeDialog = false
         this.prize = prize
+      },
+
+      afterSuccess() {
+        window.alert("success");
+        this.loadData()
       }
 
     }

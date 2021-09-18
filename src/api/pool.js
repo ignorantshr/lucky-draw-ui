@@ -124,3 +124,24 @@ export function pool_delPrize(pool){
         return res.data
     })
 }
+
+export function pool_getUnpoolPrize(id){
+    let url = poolUrl + "getUnpoolPrizes"
+    return service({
+        url: url,
+        method: 'post',
+        data: new pool(id)
+    }).then(res => {
+        return res.data
+    })
+}
+
+export function pool_draw(id){
+    let url = poolUrl + "draw"
+    return service({
+        url: url + "?id=" + id,
+        method: 'get',
+    }).then(res => {
+        return res.data
+    })
+}

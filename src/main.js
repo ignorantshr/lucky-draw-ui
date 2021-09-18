@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from './App.vue'
 import Index from './components/index.vue'
+import Draw from './components/Draw.vue'
 import Prize from './components/Prize.vue'
 import Prizes from './components/Prizes.vue'
 import PrizePool from './components/PrizePool.vue'
@@ -48,6 +49,13 @@ const router = new VueRouter({
         },
       ]
     },
+    {
+      path: '/draw',
+      component: Draw,
+      props:  route => ({
+        id: route.query.id,
+      })
+    }
   ]
 })
 
