@@ -9,6 +9,7 @@ import PrizePool from './components/PrizePool.vue'
 import PrizePools from './components/PrizePools.vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/theme-chalk/base.css';
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)

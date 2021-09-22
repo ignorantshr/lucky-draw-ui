@@ -2,7 +2,7 @@
 const proxyTable = require('./vue.config_pt_dev.js')
 
 module.exports = {
-  publicPath: '/lucky-draw/',
+  publicPath: '/luckydraw/',
   devServer: {
     port: 80,
     open: false,

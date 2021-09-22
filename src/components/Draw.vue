@@ -1,19 +1,21 @@
 <template>
-    <div>
+    <el-card class="box-card">
         <div v-if="prize.id == 1">
-            <span>很遗憾，没有中奖</span>
+            <el-tag name="tip">很遗憾，没有中奖</el-tag>
         </div>
         <div v-else>
-            <span>恭喜！！！</span>
-            <span>获得 {{ prize.name }}</span>
+            <el-tag name="tip">恭喜获得 {{ prize.name }} ！！！</el-tag>
         </div>
-        <el-image
-            style="width: 80%; height: 80%"
-            :src="prize.url"
-            fit="contain"
-            :preview-src-list="[prize.url]">
-        </el-image>
-    </div>
+        <br/>
+        <transition name="el-fade-in">
+            <el-image
+                style="width: 30%; height: 30%"
+                :src="prize.url"
+                fit="contain"
+                :preview-src-list="[prize.url]">
+            </el-image>
+        </transition>
+    </el-card>
 </template>
 
 <script>
@@ -50,5 +52,12 @@ export default {
 </script>
 
 <style>
-
+.box-card {
+    width: 50%;
+    margin-left: 25%;
+}
+.tip {
+    width: 50%;
+    height: 50%;
+}
 </style>

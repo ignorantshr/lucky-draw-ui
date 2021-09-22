@@ -44,13 +44,13 @@
             <div v-else>
             </div>
           </template>
-          <el-table-column
-            label="动作"
-            width="180">
-            <template v-slot="scope">
-              <el-button @click="draw(scope.row.id)" type="primary" plain>抽奖</el-button>
-            </template>
-          </el-table-column>
+        </el-table-column>
+        <el-table-column
+          label="动作"
+          width="180">
+          <template v-slot="scope">
+            <el-button @click="draw(scope.row.id)" type="primary" plain>抽奖</el-button>
+          </template>
         </el-table-column>
       </el-table>
   </div>
