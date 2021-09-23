@@ -21,8 +21,8 @@
       </el-form-item>
       <el-form-item label="奖品列表">
         <div class="actionHeader">
-          <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" clearable></el-input></el-col>
-          <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
+          <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" @clear="loadPrizes" clearable></el-input></el-col>
+          <el-col :span="1"><el-button icon="el-icon-search" size="small" @click="search" circle></el-button></el-col>
           <div style="text-align: right" v-if="!addButtons && !updateButtons">
             <el-button  @click="addPrize" :disabled="true" type="primary" plain>添加</el-button>
             <el-button  @click="attachPrize" type="primary" plain>从库中添加</el-button>
@@ -158,6 +158,25 @@ export default {
                 this.pool = re["result"]
             }
         }
+      },
+
+      async loadPrizes() {
+        if (this.id == null){
+            return
+        }
+        var re = await API.pool_info(this.id)
+        if (checkError(re)){
+            if (re["result"] != null){
+                this.pool.prizes = re["result"]["prizes"]
+            }
+        }
+      },
+
+      async search() {
+          var re = await API.pool_queryPrize(new API.prizeQuery(this.id, this.input))
+          if (checkError(re)) {
+              this.pool.prizes = re["result"]
+          }
       },
 
       async add() {

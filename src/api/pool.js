@@ -21,6 +21,14 @@ export function newPoolPrize(id, prizes) {
     return re
 }
 
+export class prizeQuery {
+    constructor(poolId, prizeName, prizeId){
+        this.poolId = parseInt(poolId)
+        this.prizeName = prizeName
+        this.prizeId = parseInt(prizeId)
+    }
+}
+
 export function pool_list() {
     var url = poolUrl + 'getAll'
     return service({
@@ -87,6 +95,17 @@ export function pool_delete(id) {
         method: 'post',
         headers: {},
         data: new pool(id)
+    }).then(res => {
+        return res.data
+    })
+}
+
+export function pool_queryPrize(query){
+    let url = poolUrl + "getPrizes"
+    return service({
+        url: url,
+        method: 'post',
+        data: query
     }).then(res => {
         return res.data
     })

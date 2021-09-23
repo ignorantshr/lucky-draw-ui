@@ -1,8 +1,8 @@
 <template>
   <div>
        <div class="actionHeader">
-        <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" clearable></el-input></el-col>
-        <el-col :span="1"><el-button icon="el-icon-search" size="small" circle></el-button></el-col>
+        <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" @clear="loadData" clearable></el-input></el-col>
+        <el-col :span="1"><el-button icon="el-icon-search" size="small" @click="search" circle></el-button></el-col>
         <div style="text-align: right" >
           <el-button @click="add" type="primary" plain>添加</el-button>
           <el-button @click="update" :disabled="updateAccess" type="primary" plain>编辑</el-button>
@@ -105,6 +105,13 @@ export default {
       goInfo(row, column) {
         if (column.property == "name"){
           this.$router.push({path: '/pool', query: {id: parseInt(row.id) }})
+        }
+      },
+
+      async search() {
+        var re = await API.pool_get(new API.pool(0, this.input))
+        if (checkError(re)){
+          this.pools = re["result"]
         }
       },
 
