@@ -51,7 +51,7 @@
 
 <script>
 import * as API from "@/api/prize";
-import { checkError } from "@/utils";
+import { checkError, successMsg, failMsg } from "@/utils";
 
 export default {
     name: "Prizes",
@@ -107,19 +107,17 @@ export default {
 
       async del() {
         let fail = []
-        let allSuccess = true
         for (let i in this.multipleSelection) {
           var re = await API.prize_delete(this.multipleSelection[i].id)
           let isSuccess = checkError(re)
           if (!isSuccess) {
             fail.push(this.multipleSelection[i].name)
           }
-          allSuccess = allSuccess | isSuccess
         }
-        if (allSuccess) {
-          window.alert("success")
+        if (fail.length == 0) {
+          successMsg()
         }else{
-          window.alert("faild: ", fail)
+          failMsg("删除失败：", fail)
         }
         this.loadData()
       },

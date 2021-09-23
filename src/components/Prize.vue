@@ -27,7 +27,7 @@
 
 <script>
 import * as API from "@/api/prize";
-import { checkError } from "@/utils";
+import { checkError, successMsg } from "@/utils";
 
 export default {
     name: "Prize",
@@ -60,7 +60,7 @@ export default {
         async add() {
             var re = await API.prize_add(this.prize)
             if (checkError(re)) {
-                window.alert("success")
+                successMsg()
                 this.$router.push('prizes')
             }
         },
@@ -68,17 +68,12 @@ export default {
         async update() {
             var re = await API.prize_update(this.prize)
             if (checkError(re)) {
-                window.alert("success")
+                successMsg()
             }
         },
 
         cancel() {
-            if (this.addButtons) {
-                this.prize = {}
-            }
-            if (this.updateButtons){
-                this.loadData()
-            }
+            this.$router.go(-1)
         }
     }
 }

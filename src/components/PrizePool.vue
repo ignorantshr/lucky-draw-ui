@@ -83,7 +83,7 @@
 
 <script>
 import * as API from "@/api/pool";
-import { checkError } from "@/utils";
+import { checkError, successMsg } from "@/utils";
 import PrizeDialog from './PrizeDialog.vue';
 var prize = {
             id: -1,
@@ -163,7 +163,7 @@ export default {
       async add() {
           var re = await API.pool_add(this.pool)
           if (checkError(re)) {
-              window.alert("success")
+              successMsg()
               this.$router.push('pools')
           }
       },
@@ -176,12 +176,7 @@ export default {
       },
 
       cancel() {
-          if (this.addButtons) {
-              this.pool = {}
-          }
-          if (this.updateButtons){
-              this.loadData()
-          }
+          this.$router.go(-1)
       },
 
       addPrize() {
@@ -249,7 +244,7 @@ export default {
       },
 
       afterSuccess() {
-        window.alert("success");
+        successMsg()
         this.loadData()
       }
 

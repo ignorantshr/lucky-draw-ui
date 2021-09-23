@@ -58,7 +58,7 @@
 
 <script>
 import * as API from "@/api/pool";
-import { checkError } from "@/utils";
+import { checkError, successMsg, failMsg } from "@/utils";
 
 export default {
     name: "PrizePools",
@@ -118,19 +118,17 @@ export default {
 
       async del() {
         let fail = []
-        let allSuccess = true
         for (let i in this.multipleSelection) {
           var re = await API.pool_delete(this.multipleSelection[i].id)
           let isSuccess = checkError(re)
           if (!isSuccess) {
             fail.push(this.multipleSelection[i].name)
           }
-          allSuccess = allSuccess | isSuccess
         }
-        if (allSuccess) {
-          window.alert("success")
-        }else{
-          window.alert("faild: ", fail)
+        if (fail.length == 0) {
+          successMsg()
+        }else {
+          failMsg("删除失败：", fail)
         }
         this.loadData()
       },
