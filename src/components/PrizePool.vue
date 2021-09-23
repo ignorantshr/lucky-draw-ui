@@ -24,7 +24,7 @@
           <el-col :span="8"><el-input v-model="input" placeholder="名称" size="small" @clear="loadPrizes" clearable></el-input></el-col>
           <el-col :span="1"><el-button icon="el-icon-search" size="small" @click="search" circle></el-button></el-col>
           <div style="text-align: right" v-if="!addButtons && !updateButtons">
-            <el-button  @click="addPrize" :disabled="true" type="primary" plain>添加</el-button>
+            <el-button  @click="addPrize" type="primary" plain>添加</el-button>
             <el-button  @click="attachPrize" type="primary" plain>从库中添加</el-button>
             <el-button @click="updatePrize" :disabled="updateAccess" type="primary" plain>编辑</el-button>
             <el-button @click="delPrize" :disabled="delAccess" type="primary" plain>删除</el-button>
@@ -86,7 +86,7 @@ import * as API from "@/api/pool";
 import { checkError, successMsg } from "@/utils";
 import PrizeDialog from './PrizeDialog.vue';
 var prize = {
-            id: -1,
+            id: 0,
             name: "",
             url: "",
             probability: 10,
@@ -229,7 +229,7 @@ export default {
       async realAddPrize(prize){
         this.closeDialog()
         console.log("get prize: ", prize)
-        var re = await API.pool_addPrize(API.newPoolPrize(this.id, [prize]))
+        var re = await API.pool_addNewPrize(API.newPoolPrize(this.id, [prize]))
         if (checkError(re)){
           this.afterSuccess()
         }

@@ -122,6 +122,17 @@ export function pool_addPrize(pool){
     })
 }
 
+export function pool_addNewPrize(pool){
+    let url = poolUrl + "addNewPrize"
+    return service({
+        url: url,
+        method: 'post',
+        data: pool
+    }).then(res => {
+        return res.data
+    })
+}
+
 export function pool_updatePrize(pool){
     let url = poolUrl + "updatePrize"
     return service({
