@@ -1,18 +1,22 @@
 <template>
-  <el-container>
+  <el-container style="height: 100%">
     <el-header>
       <div class="header"></div>
     </el-header>
     <el-container>
       <el-aside width="200px">
         <el-menu
+          style="height: 100% ! important"
+          class="left-menu"
+          text-color="#72767b"
+          active-text-color="#ffffff"
           default-active="1"
           @select="switchMenu">
           <el-menu-item index="1" @click="switchMenu('prizes')">
-            <span>奖品</span>
+            奖品
           </el-menu-item>
           <el-menu-item index="2" @click="switchMenu('pools')">
-            <span>奖池</span>
+            奖池
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -60,6 +64,11 @@ export default {
 </script>
 
 <style>
+.el-header {
+  background-color: #0c69a5;
+  text-align: center;
+  line-height: 20%;
+}
 .header {
   height: 100%;
   width: 100%;
@@ -67,15 +76,15 @@ export default {
   background-size: contain ;
   background-repeat:no-repeat;
 }
+.el-aside {
+  background-color: #292e34;
+  position: relative;
+  overflow-y: scroll;
+}
+.el-menu-item {
+  background-color: #292e34;
+}
 router-link {
     text-decoration: none;
-}
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
