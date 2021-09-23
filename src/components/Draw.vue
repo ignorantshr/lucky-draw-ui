@@ -1,20 +1,25 @@
 <template>
-    <el-card class="box-card">
-        <div v-if="prize.id == 1">
-            <el-tag name="tip">很遗憾，没有中奖</el-tag>
+    <el-card class="box-card" v-loading="loading">
+        <div v-if="prize.id == -1">
+            <el-tag name="tip">奖品被抽完了，下次早点来吧~</el-tag>
         </div>
         <div v-else>
-            <el-tag name="tip">恭喜获得 {{ prize.name }} ！！！</el-tag>
+            <div v-if="prize.id == 1">
+                <el-tag name="tip">很遗憾，没有中奖</el-tag>
+            </div>
+            <div v-else>
+                <el-tag name="tip">恭喜获得 {{ prize.name }} ！！！</el-tag>
+            </div>
+            <br/>
+            <transition name="el-fade-in">
+                <el-image
+                    style="width: 30%; height: 30%"
+                    :src="prize.url"
+                    fit="contain"
+                    :preview-src-list="[prize.url]">
+                </el-image>
+            </transition>
         </div>
-        <br/>
-        <transition name="el-fade-in">
-            <el-image
-                style="width: 30%; height: 30%"
-                :src="prize.url"
-                fit="contain"
-                :preview-src-list="[prize.url]">
-            </el-image>
-        </transition>
     </el-card>
 </template>
 
@@ -31,7 +36,8 @@ export default {
                 id: -1,
                 name: "",
                 url: ""
-            }
+            },
+            loading: true
         }
     },
     mounted() {
@@ -44,8 +50,16 @@ export default {
             }
             var re = await poolApi.pool_draw(this.id)
             if (checkError(re)) {
-                this.prize = re["result"]
+                let p = re["result"]
+                if (p == null){
+                    this.prize = {
+                        id: -1
+                    }
+                }else {
+                    this.prize = p
+                }
             }
+            this.loading = false
         }
     }
 }
